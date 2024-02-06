@@ -57,10 +57,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-AUTHENTICATION_BACKENDS = ["django_auth_ldap.backend.LDAPBackend"]
+AUTHENTICATION_BACKENDS = (
+    #"django_auth_ldap.backend.LDAPBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
 }
@@ -146,9 +150,6 @@ AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
 AUTH_LDAP_BIND_DN = os.environ.get("AUTH_LDAP_BIND_DN")
 AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
 
-print(AUTH_LDAP_BIND_DN)
-print(AUTH_LDAP_BIND_PASSWORD)
-
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
     os.environ.get("AUTH_LDAP_BASE_DN"),
     ldap.SCOPE_SUBTREE,
@@ -156,9 +157,10 @@ AUTH_LDAP_USER_SEARCH = LDAPSearch(
 )
 
 AUTH_LDAP_USER_ATTR_MAP = {
+    #"username": "cn",
     "first_name": "givenName",
     "last_name": "sn",
-    "email": "mail"
+    "email": "mail",
 }
 
 LOGGING = {
