@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
+import ldap
 from pathlib import Path
+
+from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-p*hblmk8^cjjhk!ktt%xh8tgs77u81u1q)49vrs1mfxu5^qt6b"
+SECRET_KEY = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -136,21 +139,18 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_LDAP_SERVER_URI = "ldap://user.domain:389"
+# LDAP
 
-import ldap
-from django_auth_ldap.config import LDAPSearch
+AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
 
-#AUTH_LDAP_BIND_DN = "cn=10858,dc=user,dc=domain"
-AUTH_LDAP_BIND_DN = "cn=10858,ou=Users,ou=УАС,ou=Мингаз,ou=Унитарное предриятие,dc=user,dc=domain"
-AUTH_LDAP_BIND_PASSWORD = "12345Aa@"
-# AUTH_LDAP_USER_SEARCH = LDAPSearch(
-#     "ou=users,dc=example,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
-# )
+AUTH_LDAP_BIND_DN = os.environ.get("AUTH_LDAP_BIND_DN")
+AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
 
-AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=users,DC=example,DC=com",
-                                   ldap.SCOPE_SUBTREE,
-                                   "(uid=% (user)s)")
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    'DC=user,DC=domain',
+    ldap.SCOPE_SUBTREE,
+    os.environ.get("AUTH_LDAP_FILTERSTR")
+)
 
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
