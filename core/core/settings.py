@@ -146,14 +146,24 @@ AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
 AUTH_LDAP_BIND_DN = os.environ.get("AUTH_LDAP_BIND_DN")
 AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
 
+print(AUTH_LDAP_BIND_DN)
+print(AUTH_LDAP_BIND_PASSWORD)
+
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    'DC=user,DC=domain',
+    os.environ.get("AUTH_LDAP_BASE_DN"),
     ldap.SCOPE_SUBTREE,
-    os.environ.get("AUTH_LDAP_FILTERSTR")
+    "(cn=%(user)s)"
 )
 
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
     "last_name": "sn",
     "email": "mail"
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
 }
