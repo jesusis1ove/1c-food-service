@@ -1,3 +1,19 @@
 from django.contrib import admin
+from .models import Nomenclature, Menu, MenuContent
 
-# Register your models here.
+
+@admin.register(Nomenclature)
+class NomenclatureAdmin(admin.ModelAdmin):
+    list_display = ('uuid', 'name', 'is_group', 'parent')
+
+
+class MenuContentInline(admin.TabularInline):
+    model = Menu.content.through
+
+
+@admin.register(Menu)
+class MenuAdmin(admin.ModelAdmin):
+    list_display = ('uuid', 'name', 'date')
+    inlines = [
+        MenuContentInline
+    ]
