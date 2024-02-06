@@ -54,6 +54,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+AUTHENTICATION_BACKENDS = ["django_auth_ldap.backend.LDAPBackend"]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
+
 ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
@@ -127,3 +135,25 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_LDAP_SERVER_URI = "ldap://user.domain:389"
+
+import ldap
+from django_auth_ldap.config import LDAPSearch
+
+#AUTH_LDAP_BIND_DN = "cn=10858,dc=user,dc=domain"
+AUTH_LDAP_BIND_DN = "cn=10858,ou=Users,ou=УАС,ou=Мингаз,ou=Унитарное предриятие,dc=user,dc=domain"
+AUTH_LDAP_BIND_PASSWORD = "12345Aa@"
+# AUTH_LDAP_USER_SEARCH = LDAPSearch(
+#     "ou=users,dc=example,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
+# )
+
+AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=users,DC=example,DC=com",
+                                   ldap.SCOPE_SUBTREE,
+                                   "(uid=% (user)s)")
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail"
+}

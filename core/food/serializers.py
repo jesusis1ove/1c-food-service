@@ -9,14 +9,18 @@ class NomenclatureSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
+class MenuContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuContent
+        fields = ('__all__')
+
+
 class MenuSerializer(serializers.ModelSerializer):
+    content = MenuContentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Menu
         fields = ('__all__')
 
 
-class MenuContentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model =MenuContent
-        fields = ('__all__')
 
