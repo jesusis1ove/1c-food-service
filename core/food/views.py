@@ -1,9 +1,8 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Nomenclature, Menu, Order
-from .serializers import NomenclatureSerializer, MenuSerializer, OrderCreateSerializer, OrderSerializer
+from .models import Nomenclature, Menu
+from .serializers import NomenclatureSerializer, MenuSerializer
 
 
 class NomenclatureViewSet(viewsets.ModelViewSet):
@@ -18,26 +17,7 @@ class MenuViewSet(viewsets.ModelViewSet):
     filterset_fields = ['date']
 
 
-class OrderViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
-    def get_serializer_class(self):
-        if self.action in ('list', 'retrieve'):
-            return OrderSerializer
-        return OrderCreateSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_staff:
-            return Order.objects.all()
-        return Order.objects.filter(created_by=user)
-
-
-
-
-
-
-from django.contrib.auth import authenticate, login, logout
-from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import authenticate, login
 from rest_framework.response import Response
 from rest_framework.views import APIView
 class LDAPLogin(APIView):

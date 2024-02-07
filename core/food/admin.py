@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Nomenclature, Menu, MenuContent, Order, OrderContent
+from .models import Nomenclature, Menu, MenuContent
 
 
 @admin.register(Nomenclature)
@@ -18,17 +18,6 @@ class MenuAdmin(admin.ModelAdmin):
         MenuContentInline
     ]
 
-
-class OrderContentInLine(admin.TabularInline):
-    model = OrderContent
-
-
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created_by', 'created_at', )
-    inlines = [
-        OrderContentInLine
-    ]
 
 
 
