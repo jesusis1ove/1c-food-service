@@ -15,7 +15,7 @@ class Menu(models.Model):
     uuid = models.CharField(max_length=36, unique=True)
     name = models.CharField(max_length=255)
     date = models.DateField()
-    content = models.ManyToManyField(Nomenclature, through='MenuContent')
+    #content = models.ManyToManyField(Nomenclature, through='MenuContent')
 
     def __str__(self):
         return self.name
@@ -26,3 +26,10 @@ class MenuContent(models.Model):
     nomenclature = models.ForeignKey(Nomenclature, on_delete=models.CASCADE)
     rate = models.CharField(max_length=150)
     price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    class Meta:
+        unique_together = ('menu', 'nomenclature')
+
+
+
+

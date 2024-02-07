@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
+import ldap
 from pathlib import Path
+
+from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-p*hblmk8^cjjhk!ktt%xh8tgs77u81u1q)49vrs1mfxu5^qt6b"
+SECRET_KEY = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,6 +45,8 @@ INSTALLED_APPS = [
     "corsheaders",
 
     "food.apps.FoodConfig",
+    "orders.apps.OrdersConfig",
+    "accounts.apps.AccountsConfig",
 ]
 
 MIDDLEWARE = [
@@ -53,6 +58,18 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+AUTHENTICATION_BACKENDS = (
+    #"django_auth_ldap.backend.LDAPBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
 
 ROOT_URLCONF = "core.urls"
 
@@ -80,9 +97,13 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
@@ -127,3 +148,30 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# LDAP
+
+AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
+
+AUTH_LDAP_BIND_DN = os.environ.get("AUTH_LDAP_BIND_DN")
+AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
+
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    os.environ.get("AUTH_LDAP_BASE_DN"),
+    ldap.SCOPE_SUBTREE,
+    "(cn=%(user)s)"
+)
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    #"username": "cn",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
+}

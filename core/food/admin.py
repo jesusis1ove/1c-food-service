@@ -8,7 +8,7 @@ class NomenclatureAdmin(admin.ModelAdmin):
 
 
 class MenuContentInline(admin.TabularInline):
-    model = Menu.content.through
+    model = MenuContent
 
 
 @admin.register(Menu)
@@ -17,3 +17,7 @@ class MenuAdmin(admin.ModelAdmin):
     inlines = [
         MenuContentInline
     ]
+
+
+
+
