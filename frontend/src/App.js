@@ -1,14 +1,9 @@
 import "./App.css";
-import Login from "./context/login";
-import BarMenu from "./components/BarMenu";
+import Login from "./content/login";
+import GeneralComponent from "./components/GeneralComponent";
 
 function App() {
-  return (
-    <div className="App">
-      <BarMenu />
-      <Login />
-    </div>
-  );
+  return <GeneralComponent content={<Login />} maxWidth={'50%'} />;
 }
 
 export default App;

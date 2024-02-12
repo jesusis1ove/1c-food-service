@@ -4,6 +4,7 @@ const justifySchema = {
   start: "flex-start",
   end: "flex-end",
   center: "center",
+  spaceAround: "space-around",
 };
 export const InlineBundle = styled.div`
   display: flex;
