@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
-#import ldap
+import ldap
 from pathlib import Path
 
-#from django_auth_ldap.config import LDAPSearch
+from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    #"django_auth_ldap.backend.LDAPBackend",
+    "django_auth_ldap.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
@@ -152,27 +152,27 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # LDAP
 
-# AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
-#
-# AUTH_LDAP_BIND_DN = os.environ.get("AUTH_LDAP_BIND_DN")
-# AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
-#
-# AUTH_LDAP_USER_SEARCH = LDAPSearch(
-#     os.environ.get("AUTH_LDAP_BASE_DN"),
-#     ldap.SCOPE_SUBTREE,
-#     "(cn=%(user)s)"
-# )
-#
-# AUTH_LDAP_USER_ATTR_MAP = {
-#     #"username": "cn",
-#     "first_name": "givenName",
-#     "last_name": "sn",
-#     "email": "mail",
-# }
-#
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "handlers": {"console": {"class": "logging.StreamHandler"}},
-#     "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
-# }
+AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
+
+AUTH_LDAP_BIND_DN = os.environ.get("AUTH_LDAP_BIND_DN")
+AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
+
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    os.environ.get("AUTH_LDAP_BASE_DN"),
+    ldap.SCOPE_SUBTREE,
+    "(sAMAccountName=%(user)s)"
+)
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "username": "sAMAccountName",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
+}
