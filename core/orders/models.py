@@ -16,7 +16,7 @@ class Order(models.Model):
 class OrderContent(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     menu_content = models.ForeignKey(MenuContent, on_delete=models.CASCADE)
-    count = models.PositiveIntegerField(
+    amount = models.PositiveIntegerField(
         default=1,
         validators=[
             MaxValueValidator(99),
