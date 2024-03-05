@@ -5,11 +5,18 @@ import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import styled from "styled-components";
 import { MediaWrapper } from "../../components/MediaWrapper";
+import { useState } from "react";
+import { encode } from "base-64";
+import {useNavigate} from "react-router-dom";
+import {Title} from "../../components/Title";
 
-const Title = styled.h2`
-  color: #015f9c;
-`;
 export default function Login() {
+  const navigate = useNavigate()
+  const [authorization, setAuthorization] = useState({
+    login: "",
+    password: "",
+  });
+  console.log(localStorage.getItem("token"));
   return (
     <>
       <Title>Вход</Title>
@@ -18,20 +25,47 @@ export default function Login() {
           <Layers>
             <Layers gutter={"0.3rem"} centerText={"left"}>
               <label htmlFor={"login"}>Логин</label>
-              <Input placeholder={"Введите логин"} type={"text"} id="login" />
+              <Input
+                placeholder={"Введите логин"}
+                type={"text"}
+                id="login"
+                value={authorization.login}
+                onChange={(e) =>
+                  setAuthorization({ ...authorization, login: e.target.value })
+                }
+              />
             </Layers>
             <Layers gutter={"0.3rem"} centerText={"left"}>
               <label htmlFor={"password"}>Пароль</label>
               <Input
                 type={"password"}
                 id={"password"}
+                value={authorization.password}
+                onChange={(e) =>
+                  setAuthorization({
+                    ...authorization,
+                    password: e.target.value,
+                  })
+                }
                 placeholder={"Введите пароль"}
               />
             </Layers>
           </Layers>
 
           <Pad margin={["1rem"]}>
-            <Button maxWidth={"100%"} type={"submit"}>
+            <Button
+              onClick={() => {
+                localStorage.setItem(
+                  "token",
+                  encode(`${authorization.login}:${authorization.password}`),
+                );
+                console.log(localStorage.getItem("token"));
+                console.log(authorization);
+                navigate('/orders')
+              }}
+              maxWidth={"100%"}
+              type={"submit"}
+            >
               Войти
             </Button>
           </Pad>
