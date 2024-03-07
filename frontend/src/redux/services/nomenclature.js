@@ -7,19 +7,13 @@ export const nomenclatureAPI = createApi({
   endpoints: (build) => ({
     fetchNomenclature: build.query({
       query: () => ({
-        url: "menu/",
+        url: "nomenclature/",
         headers: {
           Authorization: "Basic" + localStorage.getItem("token"),
           "Content-type": "application/json",
         },
       }),
     }),
-
-    fetchMeterById: build.query({
-      query: (uuid) => ({
-        url: `meters/${uuid}`,
-      }),
-    }),
   }),
 });
-export const { useFetchNomenclatureQuery, useFetchMeterByIdQuery } = nomenclatureAPI;
+export const { useFetchNomenclatureQuery } = nomenclatureAPI;

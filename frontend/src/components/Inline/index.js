@@ -8,6 +8,9 @@ const stretchSchema = {
 };
 export const Inline = styled(InlineBundle)`
   flex-wrap: nowrap;
+  p {
+    text-align: left;
+  }
   ${({ stretch }) => {
     if (typeof stretch === "number") {
       return `> :nth-child(${stretch + 1}) { flex: 1 }`;

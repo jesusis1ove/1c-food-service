@@ -38,8 +38,7 @@ export default function BarMenu() {
           alt={"logo"}
         />
       </Logo>
-      <SearchBar type={"date"} />
-        <div>ФИО</div>
+      <div>ФИО</div>
     </Menu>
   );
 }

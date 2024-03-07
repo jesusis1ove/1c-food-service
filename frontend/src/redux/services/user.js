@@ -1,25 +1,30 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { backend } from "../../backend";
-
-export const metersAPI = createApi({
-  reducerPath: "getAllMeters",
+export const accountsAPI = createApi({
+  reducerPath: "getAccounts",
   baseQuery: fetchBaseQuery({ baseUrl: `${backend}/` }),
   endpoints: (build) => ({
-    fetchAllMeters: build.query({
+    fetchAccounts: build.query({
       query: () => ({
-        url: "meters/",
+        url: "accounts/",
         headers: {
-          Authorization: "Bearer",
+          Authorization: "Bearer" + localStorage.getItem("token"),
           "Content-type": "application/json",
         },
       }),
     }),
+    createAccount: build.mutation({
+      query: (credentials) => ({
+        url: "accounts/token/",
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+          "Content-type": "application/json",
+        },
 
-    fetchMeterById: build.query({
-      query: (uuid) => ({
-        url: `meters/${uuid}`,
+        body: { ...credentials },
       }),
     }),
   }),
 });
-export const { useFetchAllMetersQuery, useFetchMeterByIdQuery } = metersAPI;
+export const { useFetchAccountsQuery, useCreateAccountMutation } = accountsAPI;
