@@ -19,4 +19,8 @@ export const Button = styled.button`
   padding: 0.5rem 3rem;
   color: white;
   border: 3px solid transparent;
+  
+  &:disabled{
+    display: none;
+  }
 `;

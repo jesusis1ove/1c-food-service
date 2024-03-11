@@ -6,9 +6,11 @@ const baseQuery = fetchBaseQuery({
   baseUrl: backend,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const token = getState.auth.token;
+    const token = getState().auth.token;
+    headers.set("Content-type", `application/json`);
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
+      // headers.set("Content-type", `application/json`);
     }
     return headers;
   },
@@ -42,6 +44,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 };
 
 export const apiSlice = createApi({
-  baseQuery: baseQueryWithReauth,
+  baseQuery: baseQuery,
   endpoints: (builder) => ({}),
 });

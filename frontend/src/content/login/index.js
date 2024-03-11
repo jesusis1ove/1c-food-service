@@ -4,17 +4,16 @@ import { Pad } from "../../components/Pad";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { MediaWrapper } from "../../components/MediaWrapper";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { encode } from "base-64";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Title } from "../../components/Title";
 import { useCreateAccountMutation } from "../../redux/services/user";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/slices/authorizationSlice";
+import { useLoginMutation } from "../../redux/services/test";
 
 export default function Login() {
   const navigate = useNavigate();
-  const userRef = useRef();
   const errorRef = useRef();
   const [authorization, setAuthorization] = useState({
     username: "",
@@ -26,10 +25,6 @@ export default function Login() {
   console.log(result);
   console.log(result.data?.access);
 
-  // useEffect(() => {
-  //   userRef.current.focus();
-  // }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -38,19 +33,17 @@ export default function Login() {
         password: authorization.password,
       }).unwrap();
       dispatch(setCredentials({ ...userData, authorization }));
-      setAuthorization(
-        setAuthorization({
-          ...authorization,
-          username: "",
-          password: "",
-        }),
-      );
-      navigate("/orders");
+      setAuthorization({
+        ...authorization,
+        username: "",
+        password: "",
+      });
+      navigate("/menu");
     } catch (error) {
       console.log(error);
       if (!error.originalStatus) {
         setErrorMsg("No Server Response");
-      } else if (!error.originalStatus === 400) {
+      } else if (!error.originalStatus === "400") {
         setErrorMsg("Missing Username or Password");
       } else if (!error.originalStatus === 401) {
         setErrorMsg("Unauthorized");
@@ -64,6 +57,7 @@ export default function Login() {
   return (
     <>
       <Title>Вход</Title>
+      <p ref={errorRef}>{errorMsg}</p>
       <Split fraction={"1/3"}>
         <Pad padding={["0", "0.5rem"]}>
           <Layers>

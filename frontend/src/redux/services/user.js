@@ -18,7 +18,6 @@ export const accountsAPI = createApi({
         url: "accounts/token/",
         method: "POST",
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
           "Content-type": "application/json",
         },
 
