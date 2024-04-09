@@ -1,9 +1,12 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 
 class Nomenclature(models.Model):
     uuid = models.CharField(max_length=36, unique=True)
     name = models.CharField(max_length=255)
+    rate = models.CharField(max_length=150)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
     is_group = models.BooleanField(default=False)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
@@ -12,10 +15,10 @@ class Nomenclature(models.Model):
 
 
 class Menu(models.Model):
-    uuid = models.CharField(max_length=36, unique=True)
-    name = models.CharField(max_length=255)
+    uuid = models.CharField(max_length=36, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateField()
-    #content = models.ManyToManyField(Nomenclature, through='MenuContent')
+    #content = models.ManyToManyField('MenuContent', related_name='menu_content')
 
     def __str__(self):
         return self.name
@@ -23,13 +26,11 @@ class Menu(models.Model):
 
 class MenuContent(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
-    nomenclature = models.ForeignKey(Nomenclature, on_delete=models.CASCADE)
-    rate = models.CharField(max_length=150)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    nomenclature = models.ManyToManyField(Nomenclature, related_name='menucontent_nomenclature')
 
-    class Meta:
-        unique_together = ('menu', 'nomenclature')
-
-
+    @property
+    def total_price(self):
+        queryset = self.nomenclature.all().aggregate(total_price=models.Sum('price'))
+        return queryset['total_price']
 
 

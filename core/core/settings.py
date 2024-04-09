@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_filters",
     "rest_framework_simplejwt",
+    "drf_yasg",
 
     "food.apps.FoodConfig",
     "orders.apps.OrdersConfig",
@@ -67,6 +68,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+if not DEBUG:
+    MIDDLEWARE.append('django_ecology.middleware.Process500')
+
 AUTHENTICATION_BACKENDS = (
     "django_auth_ldap.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
@@ -74,7 +78,7 @@ AUTHENTICATION_BACKENDS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        #'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
