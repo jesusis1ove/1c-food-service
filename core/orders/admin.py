@@ -3,6 +3,11 @@ from django.contrib import admin
 from .models import OrderContent, Order
 
 
+@admin.register(OrderContent)
+class OrderContentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'order')
+
+
 class OrderContentInLine(admin.TabularInline):
     model = OrderContent
 

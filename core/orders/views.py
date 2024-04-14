@@ -3,21 +3,21 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from orders.serializers import OrderCreateSerializer, OrderSerializer
-from orders.models import Order
+from core.renders import MainJSONRenderer
+from orders.serializers import OrderCreateUpdateSerializer, OrderRetrieveSerializer, OrderContentSerializer, OrderListSerializer
+from orders.models import Order, OrderContent
 
 
-# Create your views here.
 class OrderViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, ]
+    renderer_classes = [MainJSONRenderer]
 
     def get_serializer_class(self):
-        if self.action in ('list', 'retrieve'):
-            return OrderSerializer
-        return OrderCreateSerializer
+        if self.action == 'list':
+            return OrderListSerializer
+        elif self.action == 'retrieve':
+            return OrderRetrieveSerializer
+        return OrderCreateUpdateSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        if user.is_staff:
-            return Order.objects.all()
-        return Order.objects.filter(created_by=user)
+        return Order.objects.filter(created_by=self.request.user)

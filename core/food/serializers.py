@@ -7,11 +7,22 @@ from .models import Nomenclature, Menu, MenuContent
     Nomenclature
 """
 
+class NomenclatureGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Nomenclature
+        fields = ('id', 'name', 'is_group')
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['children'] = NomenclatureSerializer(Nomenclature.objects.filter(parent=instance),
+                                                            many=True).data
+        return representation
+
 
 class NomenclatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nomenclature
-        fields = ('__all__')
+        fields = '__all__'
 
 
 class NomenclatureSimpleSerializer(serializers.ModelSerializer):
@@ -49,7 +60,7 @@ class MenuContentCreateUpdateSerializer(serializers.ModelSerializer):
 """
 
 
-class MenuSerializer(serializers.ModelSerializer):
+class MenuRetrieveSerializer(serializers.ModelSerializer):
     content = serializers.SerializerMethodField()
 
     def get_content(self, obj):
@@ -58,6 +69,12 @@ class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = ('__all__')
+
+
+class MenuListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = ('id', 'uuid', 'date', 'name')
 
 
 class MenuCreateUpdateSerializer(serializers.ModelSerializer):
@@ -75,3 +92,9 @@ class MenuCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = '__all__'
+
+
+class MenuSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = ('id', 'name', 'date')
