@@ -5,6 +5,9 @@ django-cors-headers==4.3.1
 django-filter==23.5
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
+drf-yasg==1.21.7
+inflection==0.5.1
+packaging==24.0
 psycopg2-binary==2.9.9
 pyasn1==0.5.1
 pyasn1-modules==0.3.0
@@ -12,4 +15,6 @@ PyJWT==2.8.0
 python-dotenv==1.0.1
 python-ldap==3.4.4
 pytz==2024.1
+PyYAML==6.0.1
 sqlparse==0.4.4
+uritemplate==4.1.1
