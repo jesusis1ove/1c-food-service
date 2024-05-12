@@ -2,6 +2,12 @@ import { Inline } from "../Inline";
 import { Pad } from "../Pad";
 import styled from "styled-components";
 import { Logo } from "../Logo";
+import {
+  logOut,
+  selectCurrentToken,
+} from "../../redux/slices/authorizationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const Menu = styled(Inline).attrs(() => ({
   as: Pad,
@@ -29,6 +35,9 @@ const SearchBar = styled(Pad).attrs(() => ({
 `;
 
 export default function BarMenu() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const token = useSelector(selectCurrentToken);
   return (
     <Menu>
       <Logo size={"50px"} inverse={"rgb(1, 95, 156)"}>
@@ -39,6 +48,25 @@ export default function BarMenu() {
         />
       </Logo>
       <div>ФИО</div>
+      {token ? (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch(logOut());
+          }}
+        >
+          Выйти
+        </button>
+      ) : (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/login");
+          }}
+        >
+          Войти
+        </button>
+      )}
     </Menu>
   );
 }

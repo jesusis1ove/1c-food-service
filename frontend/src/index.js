@@ -11,6 +11,7 @@ import Layout from "./components/Layout";
 import Menu from "./content/menu";
 import Orders from "./content/orders";
 import { PersistGate } from "redux-persist/integration/react";
+import Login from "./content/login";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,11 +20,15 @@ root.render(
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <Routes>
-            <Route path={"/"} element={<Layout />} />
-            <Route path={"login"} element={<App />} />
-            <Route path={"menu"} element={<Menu />} />
-            <Route path={"/orders"} element={<Orders />} />
-            <Route element={<RequireAuth />} />
+            <Route path={"/"} element={<Layout />}>
+              <Route index element={<App />} />
+              <Route path={"login"} element={<Login/>}/>
+
+              <Route element={<RequireAuth />}>
+                <Route path={"menu"} element={<Menu />} />
+                <Route path={"orders"} element={<Orders />} />
+              </Route>
+            </Route>
           </Routes>
         </BrowserRouter>
       </PersistGate>

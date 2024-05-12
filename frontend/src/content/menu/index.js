@@ -25,15 +25,28 @@ export default function Menu() {
   const navigation = useNavigate();
   const [infoObject, setInfoObject] = useState({ menu_content: 0, amount: 0 });
   const { data: menu, isLoading } = useFetchMenuQuery({ date });
-  const [createOrder, { isSuccess, error }] = useCreateOrderMutation();
+  const [createOrder, result] = useCreateOrderMutation();
   const [order, setOrder] = useState([]);
   const [note, setNote] = useState("");
-  const token = useSelector(selectCurrentToken)
-  console.log(token)
+  console.log(result)
+  const handleCreateOrder = async (e) => {
+    e.preventDefault();
+    try {
+      await createOrder({
+        content: order,
+        // menu: menu?.results[0]?.id,
+        note,
+      });
+      // navigation("/orders");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <GeneralComponent
       maxWidth={"90%"}
-      content={
+      children={
         <div>
           <Title>
             Меню на
@@ -57,30 +70,34 @@ export default function Menu() {
           </Split>
           <Split fraction={"1/3"}>
             <div>
-              {menu &&
-                menu[0]?.content?.map((el) => (
-                  <Inline justify={"spaceAround"} id={el.id}>
-                    {/*<Input type={"checkbox"} />*/}
-                    <p>{el.nomenclature?.name}</p>
-                  </Inline>
-                ))}
+              {menu?.results[0]?.content?.map((el) => (
+                <Inline justify={"spaceAround"} id={el.id}>
+                  {/*<Input type={"checkbox"} />*/}
+                  {/*<p>{el.nomenclature?.map((el) => el.name)}</p>*/}
+                  {el.nomenclature?.map((item) => (
+                    <p>
+                      {item.name}
+                      {/*<br />*/}
+                    </p>
+                  ))}
+                </Inline>
+              ))}
             </div>
             <div>
-              {menu &&
-                menu[0]?.content?.map((el, index) => (
-                  <Inline justify={"spaceBetween"} id={el.id}>
-                    <p>{el.rate}</p>
-                    <p>{el.price}бел.р.</p>
-                    <RenderAmountInput
-                      el={el}
-                      index={index}
-                      setInfoObject={setInfoObject}
-                      infoObject={infoObject}
-                      setOrder={setOrder}
-                      order={order}
-                    />
-                  </Inline>
-                ))}
+              {menu?.results[0]?.content?.map((el, index) => (
+                <Inline justify={"spaceBetween"} id={el.id}>
+                  <p>{el.rate}</p>
+                  <p>{el.price}бел.р.</p>
+                  <RenderAmountInput
+                    el={el}
+                    index={index}
+                    setInfoObject={setInfoObject}
+                    infoObject={infoObject}
+                    setOrder={setOrder}
+                    order={order}
+                  />
+                </Inline>
+              ))}
             </div>
           </Split>
           <Pad margin={["0.5rem", 0]}>
@@ -89,13 +106,7 @@ export default function Menu() {
           <Inline>
             <Button
               disabled={!order?.length}
-              onClick={() => {
-                createOrder({
-                  content: order,
-                  note,
-                });
-                navigation("/orders");
-              }}
+              onClick={handleCreateOrder}
               type={"submit"}
             >
               Оформить заказ

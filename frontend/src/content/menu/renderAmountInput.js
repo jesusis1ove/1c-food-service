@@ -29,14 +29,14 @@ export default function RenderAmountInput({ ...props }) {
     +props.el?.id === +testId &&
       props.setInfoObject((prevState) => ({
         ...prevState,
-        amount: amount,
+        amount,
       }));
     props.setOrder((prevState) =>
       prevState.map((el) =>
         el.menu_content === props.el.id
           ? {
               ...el,
-              amount: amount,
+              amount,
             }
           : el,
       ),
@@ -47,9 +47,10 @@ export default function RenderAmountInput({ ...props }) {
     setTestId(props.el.id);
     props.setInfoObject({
       menu_content: props.el.id,
+      amount,
     });
     props.setOrder((prevState) => [
-      ...new Set([...prevState, { menu_content: props.el.id }]),
+      ...new Set([...prevState, { menu_content: props.el.id, amount }]),
     ]);
   }, [props]);
 
