@@ -3,7 +3,8 @@ import styled from "styled-components";
 export const ColumnsWrapper = styled.div`
   display: grid;
   gap: ${(props) => props.gatter ?? "1rem"};
-  grid-template-columns: repeat(${({ columns = 1 }) => columns}, fr);
+  align-items: center;
+  grid-template-columns: repeat(${(props ) => props.columns}, 25%);
 `;
 
 export const Column = styled.div`

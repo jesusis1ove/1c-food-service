@@ -57,7 +57,7 @@ export default function RenderAmountInput({ ...props }) {
   return (
     <>
       {testId === props.el.id ? (
-        <Inline>
+        <Inline justify={"center"}>
           <button id={props.el?.id} onClick={() => handleMinus()}>
             -
           </button>

@@ -5,9 +5,11 @@ import { Logo } from "../Logo";
 import {
   logOut,
   selectCurrentToken,
+  selectCurrentUser,
 } from "../../redux/slices/authorizationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../Button";
 
 export const Menu = styled(Inline).attrs(() => ({
   as: Pad,
@@ -15,8 +17,8 @@ export const Menu = styled(Inline).attrs(() => ({
   gutter: "1rem",
   justify: "start",
 }))`
-  background: rgb(1, 95, 156);
-  color: white;
+  //background: rgb(1, 95, 156);
+  color: gray;
   color-scheme: dark;
   border-block-end: 1px solid rgb(229, 229, 229);
 `;
@@ -30,42 +32,45 @@ const SearchBar = styled(Pad).attrs(() => ({
   justify-content: flex-end;
   border-radius: 0.3rem;
   border: none;
-  color: white;
-  background: rgb(1, 95, 156);
+  color: gray;
+  //background: rgb(1, 95, 156);
 `;
 
 export default function BarMenu() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useSelector(selectCurrentToken);
+  const user = useSelector(selectCurrentUser);
+  console.log(token);
+  console.log(user)
   return (
     <Menu>
-      <Logo size={"50px"} inverse={"rgb(1, 95, 156)"}>
+      <Logo size={"50px"} inverse={"white"}>
         <img
           style={{ width: "50px" }}
-          src={require("../../assets/mingaz_logo_white.png")}
+          src={require("../../assets/mingaz_logo_black.png")}
           alt={"logo"}
         />
       </Logo>
-      <div>ФИО</div>
+      <div>{user && user}</div>
       {token ? (
-        <button
+        <Button
           onClick={(e) => {
             e.preventDefault();
             dispatch(logOut());
           }}
         >
           Выйти
-        </button>
+        </Button>
       ) : (
-        <button
+        <Button
           onClick={(e) => {
             e.preventDefault();
-            navigate("/login");
+            navigate("/");
           }}
         >
           Войти
-        </button>
+        </Button>
       )}
     </Menu>
   );
